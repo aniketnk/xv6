@@ -5,6 +5,7 @@
     int
     main(void)
     {
-        printf(1, "Hello there!\n");
+        printf(1, "ps >\n");
+        cps();
         exit();
     }
