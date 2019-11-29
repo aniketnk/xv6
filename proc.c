@@ -90,6 +90,7 @@ allocproc(void)
 found:
   p->state = EMBRYO;
   p->pid = nextpid++;
+  p->priority = random();
 
   release(&ptable.lock);
 
@@ -545,7 +546,7 @@ void procdump(void)
 
 int cps(void)
 {
-  cprintf("pid\tprog\tstatus\n");
+  cprintf("pid\tprog\tstatus\tpriority\n");
   char *state;
   for (struct proc *p = ptable.proc; p < &ptable.proc[NPROC]; p++)
   {
@@ -565,7 +566,7 @@ int cps(void)
       state = "-";
       break;
     }
-    cprintf("%d\t%s\t%s\n", p->pid, p->name, state);
+    cprintf("%d\t%s\t%s\t%d\n", p->pid, p->name, state, p->priority);
   }
   return 0;
 }

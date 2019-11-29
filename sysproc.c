@@ -95,3 +95,9 @@ sys_cps(void)
 {
   return cps();
 }
+
+int 
+sys_random(void)
+{
+  return random();
+}
