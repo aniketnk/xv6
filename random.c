@@ -18,7 +18,7 @@ random(void)
   b  = ((z4 << 3) ^ z4) >> 12;
   z4 = ((z4 & 4294967168U) << 13) ^ b;
 
-  return (z1 ^ z2 ^ z3 ^ z4) / 2;
+  return ((z1 ^ z2 ^ z3 ^ z4) / 2)%100;
 }
 
 // Return a random integer between a given range.

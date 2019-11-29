@@ -236,6 +236,9 @@ void exit(void)
   struct proc *p;
   int fd;
 
+  cprintf("Selected process with Priority: %d\n", curproc->priority);
+
+
   if (curproc == initproc)
     panic("init exiting");
 
@@ -334,6 +337,7 @@ int wait(void)
 void scheduler(void)
 {
   struct proc *p;
+  struct proc *p1;
   struct cpu *c = mycpu();
   c->proc = 0;
 
@@ -346,17 +350,32 @@ void scheduler(void)
     acquire(&ptable.lock);
     for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
     {
+      struct proc *minProc;
       if (p->state != RUNNABLE)
         continue;
+      minProc = p;
+      for(p1 = ptable.proc; p1 < &ptable.proc[NPROC]; p1++)
+      {
+        if (p1->state != RUNNABLE)
+        continue;
 
+        uint proPrio = p1->priority;
+        if(proPrio > minProc->priority)
+        {
+          minProc = p;
+          // cprintf("Selected process with Priority: %d\n", minProc->priority);
+        }
+      }
       // Switch to chosen process.  It is the process's job
       // to release ptable.lock and then reacquire it
       // before jumping back to us.
-      c->proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
+      
+      // cprintf("Selected process with Priority: %d\n", minProc->priority);
+      c->proc = minProc;
+      switchuvm(minProc);
+      minProc->state = RUNNING;
 
-      swtch(&(c->scheduler), p->context);
+      swtch(&(c->scheduler), minProc->context);
       switchkvm();
 
       // Process is done running for now.
